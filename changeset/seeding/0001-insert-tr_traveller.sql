@@ -1,0 +1,9 @@
+INSERT INTO public.tr_traveller
+("name", rarity, influence_id)
+VALUES('Fiore', 5, 3);
+INSERT INTO public.tr_traveller
+("name", rarity, influence_id)
+VALUES('Gilderoy', 5, 2);
+INSERT INTO public.tr_traveller
+("name", rarity, influence_id)
+VALUES('Viola', 5, 1);
