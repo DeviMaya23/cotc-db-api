@@ -1,11 +1,16 @@
 package main
 
 import (
+	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 func main() {
@@ -13,9 +18,41 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error loading .env file: %s", err)
 	}
+
+	dbHost := os.Getenv("DATABASE_HOST")
+	dbPort := os.Getenv("DATABASE_PORT")
+	dbUser := os.Getenv("DATABASE_USER")
+	dbPass := os.Getenv("DATABASE_PASS")
+	dbName := os.Getenv("DATABASE_NAME")
+	dsn := fmt.Sprintf("sslmode=disable host=%s port=%s user=%s password='%s' dbname=%s timezone=%s", dbHost, dbPort, dbUser, dbPass, dbName, "Asia/Jakarta")
+
+	dbConn, err := sql.Open("pgx", dsn)
+	if err != nil {
+		log.Fatal("failed open database ", err)
+	}
+	_, err = gorm.Open(postgres.New(postgres.Config{
+		Conn: dbConn,
+	}), &gorm.Config{})
+	if err != nil {
+		log.Fatal("failed to open gorm ", err)
+	}
+
+	err = dbConn.Ping()
+	if err != nil {
+		log.Fatal("failed to ping database ", err)
+	}
+
+	defer func() {
+		err := dbConn.Close()
+		if err != nil {
+			log.Fatal("got error when closing the DB connection", err)
+		}
+	}()
+
+	addr := fmt.Sprintf(":%s", os.Getenv("APP_PORT"))
 	e := echo.New()
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")
 	})
-	e.Logger.Fatal(e.Start(":1323"))
+	e.Logger.Fatal(e.Start(addr))
 }
