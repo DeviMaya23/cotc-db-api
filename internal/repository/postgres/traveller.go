@@ -1,4 +1,22 @@
 package postgres
 
+import (
+	"context"
+	"lizobly/cotc-db/domain"
+
+	"gorm.io/gorm"
+)
+
 type TravellerRepository struct {
+	db *gorm.DB
+}
+
+func NewTravellerRepository(db *gorm.DB) *TravellerRepository {
+	return &TravellerRepository{
+		db: db,
+	}
+}
+func (r TravellerRepository) GetByID(ctx context.Context, id int) (result domain.Traveller, err error) {
+	err = r.db.WithContext(ctx).First(&result, "id = ?", id).Error
+	return
 }
