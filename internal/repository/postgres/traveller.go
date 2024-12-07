@@ -17,6 +17,6 @@ func NewTravellerRepository(db *gorm.DB) *TravellerRepository {
 	}
 }
 func (r TravellerRepository) GetByID(ctx context.Context, id int) (result domain.Traveller, err error) {
-	err = r.db.WithContext(ctx).First(&result, "id = ?", id).Error
+	err = r.db.WithContext(ctx).Preload("Influence").First(&result, "id = ?", id).Error
 	return
 }

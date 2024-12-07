@@ -3,8 +3,10 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	postgresRepo "lizobly/cotc-db/internal/repository/postgres"
+	"lizobly/cotc-db/internal/rest"
+	"lizobly/cotc-db/traveller"
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -30,7 +32,7 @@ func main() {
 	if err != nil {
 		log.Fatal("failed open database ", err)
 	}
-	_, err = gorm.Open(postgres.New(postgres.Config{
+	db, err := gorm.Open(postgres.New(postgres.Config{
 		Conn: dbConn,
 	}), &gorm.Config{})
 	if err != nil {
@@ -51,8 +53,15 @@ func main() {
 
 	addr := fmt.Sprintf(":%s", os.Getenv("APP_PORT"))
 	e := echo.New()
-	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello, World!")
-	})
+
+	// Repository
+	travellerRepo := postgresRepo.NewTravellerRepository(db)
+
+	// Service
+	travellerService := traveller.NewService(travellerRepo)
+
+	// Handler
+	rest.NewTravellerHandler(e, travellerService)
+
 	e.Logger.Fatal(e.Start(addr))
 }
