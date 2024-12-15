@@ -5,6 +5,7 @@ import (
 	"fmt"
 	postgresRepo "lizobly/cotc-db/internal/repository/postgres"
 	"lizobly/cotc-db/internal/rest"
+	"lizobly/cotc-db/pkg/validator"
 	"lizobly/cotc-db/traveller"
 	"log"
 	"os"
@@ -16,6 +17,7 @@ import (
 )
 
 func main() {
+
 	err := godotenv.Load("config.env")
 	if err != nil {
 		log.Fatalf("Error loading .env file: %s", err)
@@ -53,6 +55,9 @@ func main() {
 
 	addr := fmt.Sprintf(":%s", os.Getenv("APP_PORT"))
 	e := echo.New()
+
+	// Validator
+	e.Validator = validator.NewValidator()
 
 	// Repository
 	travellerRepo := postgresRepo.NewTravellerRepository(db)

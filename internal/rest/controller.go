@@ -32,3 +32,11 @@ func (c Controller) ResponseError(ctx echo.Context, httpStatus int, message stri
 		Errors:  errorData,
 	})
 }
+
+func (c Controller) ResponseErrorValidation(ctx echo.Context, err error) error {
+
+	return ctx.JSON(http.StatusInternalServerError, StandardAPIResponse{
+		Message: "error validation",
+		Errors:  err,
+	})
+}

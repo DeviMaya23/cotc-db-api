@@ -1,7 +1,7 @@
 package rest
 
 import (
-	"lizobly/cotc-db/domain"
+	"lizobly/cotc-db/pkg/domain"
 	"net/http"
 	"strconv"
 
@@ -10,7 +10,7 @@ import (
 
 type TravellerService interface {
 	GetByID(ctx echo.Context, id int) (res domain.Traveller, err error)
-	Create(ctx echo.Context, input *domain.Traveller) (err error)
+	Create(ctx echo.Context, input domain.CreateTravellerRequest) (err error)
 	Update(ctx echo.Context, input *domain.Traveller) (err error)
 	Delete(ctx echo.Context, id int) (err error)
 }
@@ -46,13 +46,18 @@ func (a *TravellerHandler) GetByID(ctx echo.Context) error {
 
 func (a *TravellerHandler) Create(ctx echo.Context) error {
 
-	var newTraveller domain.Traveller
+	var newTraveller domain.CreateTravellerRequest
 	err := ctx.Bind(&newTraveller)
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	err = a.Service.Create(ctx, &newTraveller)
+	err = ctx.Validate(&newTraveller)
+	if err != nil {
+		return a.ResponseErrorValidation(ctx, err)
+	}
+
+	err = a.Service.Create(ctx, newTraveller)
 	if err != nil {
 		return a.ResponseError(ctx, http.StatusBadRequest, "error get data", err.Error())
 	}

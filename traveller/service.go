@@ -2,7 +2,7 @@ package traveller
 
 import (
 	"context"
-	"lizobly/cotc-db/domain"
+	"lizobly/cotc-db/pkg/domain"
 
 	"github.com/labstack/echo/v4"
 )
@@ -34,9 +34,15 @@ func (s Service) GetByID(ctx echo.Context, id int) (res domain.Traveller, err er
 	return
 }
 
-func (s Service) Create(ctx echo.Context, input *domain.Traveller) (err error) {
+func (s Service) Create(ctx echo.Context, input domain.CreateTravellerRequest) (err error) {
 
-	err = s.travellerRepo.Create(ctx.Request().Context(), input)
+	newTraveller := domain.Traveller{
+		Name:        input.Name,
+		Rarity:      input.Rarity,
+		InfluenceID: domain.GetInfluenceID(input.Influence),
+	}
+
+	err = s.travellerRepo.Create(ctx.Request().Context(), &newTraveller)
 	if err != nil {
 		// TODO: log
 		return

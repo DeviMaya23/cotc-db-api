@@ -2,7 +2,7 @@ package postgres
 
 import (
 	"context"
-	"lizobly/cotc-db/domain"
+	"lizobly/cotc-db/pkg/domain"
 
 	"gorm.io/gorm"
 )

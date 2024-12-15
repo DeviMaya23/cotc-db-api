@@ -11,3 +11,9 @@ type Traveller struct {
 func (Traveller) TableName() string {
 	return "tr_traveller"
 }
+
+type CreateTravellerRequest struct {
+	Name      string `json:"name" validate:"required,lte=50"`
+	Rarity    int    `json:"rarity" validate:"required"`
+	Influence string `json:"influence" validate:"required"`
+}
