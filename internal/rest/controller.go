@@ -45,25 +45,28 @@ func (c Controller) ResponseError(ctx echo.Context, httpStatus int, message stri
 
 func (c Controller) ResponseErrorValidation(ctx echo.Context, err error) error {
 
+	// TODO : non go validator error
 	// _, ok := err.(*echo.HTTPError)
 	// if !ok {
 	// 	report = echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	// }
 
-	var validationMessages []ValidationErrorFields
-	ctxValidator := ctx.Get("validator").(*pkgValidator.CustomValidator)
+	var errMsg []ValidationErrorFields
+	validate := ctx.Get("validator").(*pkgValidator.CustomValidator)
+	language := ctx.Request().Header.Get("Accept-Language")
+	translator, _ := validate.Translator.FindTranslator(language)
 
 	if castedObject, ok := err.(validator.ValidationErrors); ok {
 		for _, e := range castedObject {
-			validationMessages = append(validationMessages, ValidationErrorFields{
+			errMsg = append(errMsg, ValidationErrorFields{
 				Field:   strcase.ToSnake(e.Field()),
-				Message: e.Translate(ctxValidator.Translator.GetFallback()),
+				Message: e.Translate(translator),
 			})
 		}
 	}
 
 	return ctx.JSON(http.StatusInternalServerError, StandardAPIResponse{
 		Message: "error validation",
-		Errors:  validationMessages,
+		Errors:  errMsg,
 	})
 }
