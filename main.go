@@ -57,7 +57,14 @@ func main() {
 	e := echo.New()
 
 	// Validator
-	e.Validator = validator.NewValidator()
+	validator := validator.NewValidator()
+	e.Validator = validator
+	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(ctx echo.Context) error {
+			ctx.Set("validator", validator)
+			return next(ctx)
+		}
+	})
 
 	// Repository
 	travellerRepo := postgresRepo.NewTravellerRepository(db)
