@@ -2,6 +2,7 @@ package validator
 
 import (
 	"fmt"
+	"lizobly/cotc-db/pkg/domain"
 
 	"github.com/go-playground/locales/en"
 	"github.com/go-playground/locales/id"
@@ -37,6 +38,18 @@ func NewValidator() *CustomValidator {
 	}
 	id_translations.RegisterDefaultTranslations(newValidator, indonesian)
 
+	// Register Custom Validator
+	newValidator.RegisterValidation("influence", ValidateInfluence)
+
+	// Register Custom Validator Message
+	newValidator.RegisterTranslation("influence", english, func(ut ut.Translator) error {
+		return ut.Add("influence", "{0} must be valid influence type.", true) // see universal-translator for details
+	}, func(ut ut.Translator, fe validator.FieldError) string {
+		t, _ := ut.T("influence", fe.Field())
+
+		return t
+	})
+
 	return &CustomValidator{
 		Validator:  newValidator,
 		Translator: uni,
@@ -49,4 +62,8 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 		return err
 	}
 	return nil
+}
+
+func ValidateInfluence(fl validator.FieldLevel) bool {
+	return domain.GetInfluenceID(fl.Field().String()) != 0
 }

@@ -15,5 +15,5 @@ func (Traveller) TableName() string {
 type CreateTravellerRequest struct {
 	Name      string `json:"name" validate:"required,lte=50"`
 	Rarity    int    `json:"rarity" validate:"required"`
-	Influence string `json:"influence" validate:"required"`
+	Influence string `json:"influence" validate:"required,influence"`
 }
