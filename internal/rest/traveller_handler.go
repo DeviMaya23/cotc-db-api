@@ -24,12 +24,27 @@ func NewTravellerHandler(e *echo.Echo, svc TravellerService) {
 	handler := &TravellerHandler{
 		Service: svc,
 	}
-	e.GET("/travellers/:id", handler.GetByID)
-	e.POST("/travellers", handler.Create)
-	e.PUT("/travellers/:id", handler.Update)
-	e.DELETE("/travellers/:id", handler.Delete)
+	v1 := e.Group("/api/v1/travellers")
+
+	v1.GET("/:id", handler.GetByID)
+	v1.POST("", handler.Create)
+	v1.PUT("/:id", handler.Update)
+	v1.DELETE("/:id", handler.Delete)
 }
 
+// GetByID godoc
+//
+//	@Summary		Get by ID
+//	@Description	get traveller information by ID
+//	@Tags			accounts
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		int	true	"Account ID"
+//	@Success		200	{object}	domain.Traveller
+//	@Failure		400	{object}	StandardAPIResponse
+//	@Failure		404	{object}	StandardAPIResponse
+//	@Failure		500	{object}	StandardAPIResponse
+//	@Router			/travellers/{id} [get]
 func (a *TravellerHandler) GetByID(ctx echo.Context) error {
 	id, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {

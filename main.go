@@ -3,6 +3,8 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	_ "lizobly/cotc-db/docs"
+
 	postgresRepo "lizobly/cotc-db/internal/repository/postgres"
 	"lizobly/cotc-db/internal/rest"
 	"lizobly/cotc-db/pkg/validator"
@@ -10,12 +12,22 @@ import (
 	"log"
 	"os"
 
+	"github.com/swaggo/echo-swagger"
+
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
+//	@title			COTC DB API
+//	@version		1.0
+//	@termsOfService	http://swagger.io/terms/
+
+//	@contact.name	Liz
+//	@contact.email	j2qgehn84@mozmail.com
+
+// @BasePath	/api/v1
 func main() {
 
 	err := godotenv.Load("config.env")
@@ -56,6 +68,7 @@ func main() {
 	addr := fmt.Sprintf(":%s", os.Getenv("APP_PORT"))
 	e := echo.New()
 
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
 	// Validator
 	validator := validator.NewValidator()
 	e.Validator = validator

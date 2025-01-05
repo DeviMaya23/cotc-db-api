@@ -1,0 +1,72 @@
+basePath: /api/v1
+definitions:
+  domain.Influence:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  domain.Traveller:
+    properties:
+      id:
+        type: integer
+      influence:
+        $ref: '#/definitions/domain.Influence'
+      influence_id:
+        type: integer
+      name:
+        type: string
+      rarity:
+        type: integer
+    type: object
+  rest.StandardAPIResponse:
+    properties:
+      data: {}
+      errors: {}
+      message:
+        type: string
+      metadata: {}
+    type: object
+info:
+  contact:
+    email: j2qgehn84@mozmail.com
+    name: Liz
+  termsOfService: http://swagger.io/terms/
+  title: COTC DB API
+  version: "1.0"
+paths:
+  /travellers/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get traveller information by ID
+      parameters:
+      - description: Account ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Traveller'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/rest.StandardAPIResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/rest.StandardAPIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/rest.StandardAPIResponse'
+      summary: Get by ID
+      tags:
+      - accounts
+swagger: "2.0"
