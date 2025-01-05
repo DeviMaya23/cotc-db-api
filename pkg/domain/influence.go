@@ -1,7 +1,7 @@
 package domain
 
 type Influence struct {
-	ID   int64  `json:"id" gorm:"id"`
+	CommonModel
 	Name string `json:"name" gorm:"name"`
 }
 

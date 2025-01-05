@@ -1,7 +1,7 @@
 package domain
 
 type Traveller struct {
-	ID          int64     `json:"id" gorm:"id"`
+	CommonModel
 	Name        string    `json:"name" gorm:"name"`
 	Rarity      int       `json:"rarity" gorm:"rarity"`
 	InfluenceID int       `json:"influence_id" gorm:"influence_id"`
