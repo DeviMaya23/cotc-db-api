@@ -2,7 +2,7 @@ package validator
 
 import (
 	"fmt"
-	"lizobly/cotc-db/pkg/domain"
+	"lizobly/cotc-db/pkg/constants"
 
 	"github.com/go-playground/locales/en"
 	"github.com/go-playground/locales/id"
@@ -65,5 +65,5 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 }
 
 func ValidateInfluence(fl validator.FieldLevel) bool {
-	return domain.GetInfluenceID(fl.Field().String()) != 0
+	return constants.GetInfluenceID(fl.Field().String()) != 0
 }

@@ -3,6 +3,7 @@ package traveller
 import (
 	"context"
 	"lizobly/cotc-db/pkg/domain"
+	"lizobly/cotc-db/pkg/constants"
 
 	"github.com/labstack/echo/v4"
 )
@@ -39,7 +40,7 @@ func (s Service) Create(ctx echo.Context, input domain.CreateTravellerRequest) (
 	newTraveller := domain.Traveller{
 		Name:        input.Name,
 		Rarity:      input.Rarity,
-		InfluenceID: domain.GetInfluenceID(input.Influence),
+		InfluenceID: constants.GetInfluenceID(input.Influence),
 	}
 
 	err = s.travellerRepo.Create(ctx.Request().Context(), &newTraveller)

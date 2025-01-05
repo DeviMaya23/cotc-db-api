@@ -12,7 +12,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/swaggo/echo-swagger"
+	echoSwagger "github.com/swaggo/echo-swagger"
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
@@ -85,8 +85,10 @@ func main() {
 	// Service
 	travellerService := traveller.NewService(travellerRepo)
 
+	v1 := e.Group("/api/v1")
+
 	// Handler
-	rest.NewTravellerHandler(e, travellerService)
+	rest.NewTravellerHandler(v1, travellerService)
 
 	e.Logger.Fatal(e.Start(addr))
 }

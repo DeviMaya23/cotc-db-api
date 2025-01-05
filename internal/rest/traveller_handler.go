@@ -20,16 +20,16 @@ type TravellerHandler struct {
 	Service TravellerService
 }
 
-func NewTravellerHandler(e *echo.Echo, svc TravellerService) {
+func NewTravellerHandler(e *echo.Group, svc TravellerService) {
 	handler := &TravellerHandler{
 		Service: svc,
 	}
-	v1 := e.Group("/api/v1/travellers")
+	group := e.Group("/travellers")
 
-	v1.GET("/:id", handler.GetByID)
-	v1.POST("", handler.Create)
-	v1.PUT("/:id", handler.Update)
-	v1.DELETE("/:id", handler.Delete)
+	group.GET("/:id", handler.GetByID)
+	group.POST("", handler.Create)
+	group.PUT("/:id", handler.Update)
+	group.DELETE("/:id", handler.Delete)
 }
 
 // GetByID godoc
