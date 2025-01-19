@@ -2,8 +2,8 @@ package traveller
 
 import (
 	"context"
-	"lizobly/cotc-db/pkg/domain"
 	"lizobly/cotc-db/pkg/constants"
+	"lizobly/cotc-db/pkg/domain"
 
 	"github.com/labstack/echo/v4"
 )
@@ -19,7 +19,7 @@ type Service struct {
 	travellerRepo TravellerRepository
 }
 
-func NewService(t TravellerRepository) *Service {
+func NewTravellerService(t TravellerRepository) *Service {
 	return &Service{
 		travellerRepo: t,
 	}

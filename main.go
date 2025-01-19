@@ -4,9 +4,11 @@ import (
 	"database/sql"
 	"fmt"
 	_ "lizobly/cotc-db/docs"
+	"lizobly/cotc-db/user"
 
 	postgresRepo "lizobly/cotc-db/internal/repository/postgres"
 	"lizobly/cotc-db/internal/rest"
+	"lizobly/cotc-db/pkg/middleware"
 	"lizobly/cotc-db/pkg/validator"
 	"lizobly/cotc-db/traveller"
 	"log"
@@ -79,16 +81,26 @@ func main() {
 		}
 	})
 
+	// Middleware
+	jwtMiddleware := middleware.NewJWTMiddleware()
+
 	// Repository
 	travellerRepo := postgresRepo.NewTravellerRepository(db)
+	userRepo := postgresRepo.NewUserRepository(db)
 
 	// Service
-	travellerService := traveller.NewService(travellerRepo)
+	travellerService := traveller.NewTravellerService(travellerRepo)
+	userService := user.NewUserService(userRepo)
 
 	v1 := e.Group("/api/v1")
+	v1.Use(jwtMiddleware)
 
 	// Handler
 	rest.NewTravellerHandler(v1, travellerService)
+
+	// NewUserHandler
+	echoGroup := e.Group("/")
+	rest.NewUserHandler(echoGroup, userService)
 
 	e.Logger.Fatal(e.Start(addr))
 }
