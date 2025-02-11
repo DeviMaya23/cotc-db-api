@@ -2,11 +2,13 @@ package user
 
 import (
 	"context"
-	"errors"
 	"lizobly/cotc-db/pkg/domain"
+	"os"
+	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserRepository interface {
@@ -27,19 +29,29 @@ func (s UserService) Login(ctx echo.Context, req domain.LoginRequest) (res domai
 
 	user, err := s.userRepo.GetByUsername(ctx.Request().Context(), req.Username)
 	if err != nil {
-		err = errors.New("failed get user info")
+		err = domain.ErrUserNotFound
 		return
 	}
 
-	// TODO : hash password
-	if user.Password != req.Password {
-		err = errors.New("invalid password")
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
+	if err != nil {
+		err = domain.ErrInvalidPassword
 		return
 	}
 
-	token := jwt.New(jwt.SigningMethodHS256)
+	jwtSecretKey := os.Getenv("JWT_SECRET_KEY")
+	jwtTimeoutStr := os.Getenv("JWT_TIMEOUT")
+	jwtTimeout, _ := time.ParseDuration(jwtTimeoutStr)
 
-	t, err := token.SignedString([]byte("2catnipsforisla"))
+	exp := time.Now().Add(jwtTimeout)
+	claims := domain.JWTClaims{
+		Username: user.Username,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(exp),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	t, err := token.SignedString([]byte(jwtSecretKey))
 	if err != nil {
 		return
 	}

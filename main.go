@@ -97,10 +97,7 @@ func main() {
 
 	// Handler
 	rest.NewTravellerHandler(v1, travellerService)
-
-	// NewUserHandler
-	echoGroup := e.Group("/")
-	rest.NewUserHandler(echoGroup, userService)
+	rest.NewUserHandler(v1, userService)
 
 	e.Logger.Fatal(e.Start(addr))
 }

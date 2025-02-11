@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"errors"
 	"lizobly/cotc-db/pkg/domain"
 	"net/http"
 
@@ -21,7 +22,7 @@ func NewUserHandler(e *echo.Group, svc UserService) {
 		Service: svc,
 	}
 
-	e.POST("login", handler.Login)
+	e.POST("/login", handler.Login)
 }
 
 func (h *UserHandler) Login(ctx echo.Context) error {
@@ -40,7 +41,14 @@ func (h *UserHandler) Login(ctx echo.Context) error {
 
 	res, err := h.Service.Login(ctx, request)
 	if err != nil {
-		return h.ResponseError(ctx, http.StatusBadRequest, "error get data", err.Error())
+		switch {
+		case errors.Is(err, domain.ErrInvalidPassword):
+			return h.ResponseError(ctx, http.StatusBadRequest, "error", err.Error())
+		case errors.Is(err, domain.ErrUserNotFound):
+			return h.ResponseError(ctx, http.StatusBadRequest, "error", err.Error())
+		default:
+			return h.ResponseError(ctx, http.StatusInternalServerError, "error", err.Error())
+		}
 	}
 
 	return h.Ok(ctx, "success", res, nil)
