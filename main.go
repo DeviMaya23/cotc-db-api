@@ -8,16 +8,18 @@ import (
 
 	postgresRepo "lizobly/cotc-db/internal/repository/postgres"
 	"lizobly/cotc-db/internal/rest"
-	"lizobly/cotc-db/pkg/middleware"
+	pkgMiddleware "lizobly/cotc-db/pkg/middleware"
 	"lizobly/cotc-db/pkg/validator"
 	"lizobly/cotc-db/traveller"
 	"log"
 	"os"
 
 	echoSwagger "github.com/swaggo/echo-swagger"
+	"go.uber.org/zap"
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -70,6 +72,19 @@ func main() {
 	addr := fmt.Sprintf(":%s", os.Getenv("APP_PORT"))
 	e := echo.New()
 
+	logger, _ := zap.NewProduction()
+	e.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
+		LogURI:    true,
+		LogStatus: true,
+		LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
+			logger.Info("request",
+				zap.String("URI", v.URI),
+				zap.Int("status", v.Status),
+			)
+			return nil
+		},
+	}))
+
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 	// Validator
 	validator := validator.NewValidator()
@@ -82,7 +97,7 @@ func main() {
 	})
 
 	// Middleware
-	jwtMiddleware := middleware.NewJWTMiddleware()
+	jwtMiddleware := pkgMiddleware.NewJWTMiddleware()
 
 	// Repository
 	travellerRepo := postgresRepo.NewTravellerRepository(db)
