@@ -27,7 +27,7 @@ func (r TravellerRepository) Create(ctx context.Context, input *domain.Traveller
 }
 
 func (r TravellerRepository) Update(ctx context.Context, input *domain.Traveller) (err error) {
-	err = r.db.WithContext(ctx).Save(input).Error
+	err = r.db.WithContext(ctx).Updates(input).Error
 	return
 }
 

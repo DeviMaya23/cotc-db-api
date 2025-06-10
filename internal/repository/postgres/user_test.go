@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestUserRepository_(t *testing.T) {
+func TestUserRepository_GetByUsername(t *testing.T) {
 	db, mock, err := helpers.NewMockDB()
 
 	if err != nil {
