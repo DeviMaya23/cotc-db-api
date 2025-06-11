@@ -3,7 +3,7 @@ package user
 import (
 	"context"
 	"lizobly/cotc-db/pkg/domain"
-	"os"
+	"lizobly/cotc-db/pkg/helpers"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -38,8 +38,8 @@ func (s UserService) Login(ctx context.Context, req domain.LoginRequest) (res do
 		return
 	}
 
-	jwtSecretKey := os.Getenv("JWT_SECRET_KEY")
-	jwtTimeoutStr := os.Getenv("JWT_TIMEOUT")
+	jwtSecretKey := helpers.EnvWithDefault("JWT_SECRET_KEY", "2catnipsforisla")
+	jwtTimeoutStr := helpers.EnvWithDefault("JWT_TIMEOUT", "10m")
 	jwtTimeout, _ := time.ParseDuration(jwtTimeoutStr)
 
 	exp := time.Now().Add(jwtTimeout)
