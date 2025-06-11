@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"context"
 	"lizobly/cotc-db/pkg/domain"
 	"net/http"
 	"strconv"
@@ -9,10 +10,10 @@ import (
 )
 
 type TravellerService interface {
-	GetByID(ctx echo.Context, id int) (res domain.Traveller, err error)
-	Create(ctx echo.Context, input domain.CreateTravellerRequest) (err error)
-	Update(ctx echo.Context, input *domain.Traveller) (err error)
-	Delete(ctx echo.Context, id int) (err error)
+	GetByID(ctx context.Context, id int) (res domain.Traveller, err error)
+	Create(ctx context.Context, input domain.CreateTravellerRequest) (err error)
+	Update(ctx context.Context, input *domain.Traveller) (err error)
+	Delete(ctx context.Context, id int) (err error)
 }
 
 type TravellerHandler struct {
@@ -51,7 +52,7 @@ func (a *TravellerHandler) GetByID(ctx echo.Context) error {
 		return a.ResponseError(ctx, http.StatusBadRequest, "error validation", "id not found")
 	}
 
-	traveller, err := a.Service.GetByID(ctx, id)
+	traveller, err := a.Service.GetByID(ctx.Request().Context(), id)
 	if err != nil {
 		return a.ResponseError(ctx, http.StatusBadRequest, "error get data", err.Error())
 	}
@@ -72,7 +73,7 @@ func (a *TravellerHandler) Create(ctx echo.Context) error {
 		return a.ResponseErrorValidation(ctx, err)
 	}
 
-	err = a.Service.Create(ctx, newTraveller)
+	err = a.Service.Create(ctx.Request().Context(), newTraveller)
 	if err != nil {
 		return a.ResponseError(ctx, http.StatusBadRequest, "error get data", err.Error())
 	}
@@ -93,7 +94,7 @@ func (a *TravellerHandler) Update(ctx echo.Context) error {
 	}
 	traveller.ID = int64(id)
 
-	err = a.Service.Update(ctx, &traveller)
+	err = a.Service.Update(ctx.Request().Context(), &traveller)
 	if err != nil {
 		return a.ResponseError(ctx, http.StatusBadRequest, "error get data", err.Error())
 	}
@@ -107,7 +108,7 @@ func (a *TravellerHandler) Delete(ctx echo.Context) error {
 		return a.ResponseError(ctx, http.StatusBadRequest, "error validation", "id not found")
 	}
 
-	err = a.Service.Delete(ctx, id)
+	err = a.Service.Delete(ctx.Request().Context(), id)
 	if err != nil {
 		return a.ResponseError(ctx, http.StatusBadRequest, "error get data", err.Error())
 	}

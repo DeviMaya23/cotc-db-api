@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -25,9 +24,9 @@ func NewUserService(u UserRepository) *UserService {
 	}
 }
 
-func (s UserService) Login(ctx echo.Context, req domain.LoginRequest) (res domain.LoginResponse, err error) {
+func (s UserService) Login(ctx context.Context, req domain.LoginRequest) (res domain.LoginResponse, err error) {
 
-	user, err := s.userRepo.GetByUsername(ctx.Request().Context(), req.Username)
+	user, err := s.userRepo.GetByUsername(ctx, req.Username)
 	if err != nil {
 		err = domain.ErrUserNotFound
 		return

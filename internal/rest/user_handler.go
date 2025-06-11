@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"context"
 	"errors"
 	"lizobly/cotc-db/pkg/domain"
 	"net/http"
@@ -9,7 +10,7 @@ import (
 )
 
 type UserService interface {
-	Login(ctx echo.Context, req domain.LoginRequest) (res domain.LoginResponse, err error)
+	Login(ctx context.Context, req domain.LoginRequest) (res domain.LoginResponse, err error)
 }
 
 type UserHandler struct {
@@ -39,7 +40,7 @@ func (h *UserHandler) Login(ctx echo.Context) error {
 		return h.ResponseErrorValidation(ctx, err)
 	}
 
-	res, err := h.Service.Login(ctx, request)
+	res, err := h.Service.Login(ctx.Request().Context(), request)
 	if err != nil {
 		switch {
 		case errors.Is(err, domain.ErrInvalidPassword):
