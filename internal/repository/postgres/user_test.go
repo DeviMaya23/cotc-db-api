@@ -2,27 +2,48 @@ package postgres
 
 import (
 	"context"
+	"lizobly/cotc-db/pkg/domain"
 	"lizobly/cotc-db/pkg/helpers"
+	"regexp"
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
+	"gorm.io/gorm"
 )
 
-func TestUserRepository_GetByUsername(t *testing.T) {
-	db, mock, err := helpers.NewMockDB()
+type UserRepositorySuite struct {
+	suite.Suite
+	db   *gorm.DB
+	mock sqlmock.Sqlmock
+	repo *UserRepository
+}
 
+func TestUserRepositorySuite(t *testing.T) {
+	suite.Run(t, new(UserRepositorySuite))
+}
+
+func (s *UserRepositorySuite) SetupTest() {
+	var err error
+	s.db, s.mock, err = helpers.NewMockDB()
 	if err != nil {
-		t.Fatal(err)
+		s.T().Fatal()
 	}
-	repo := NewUserRepository(db)
-	username := "username"
-	t.Run("success", func(t *testing.T) {
-		mock.ExpectQuery("SELECT (.*)").WithArgs(username, 1).WillReturnRows(
-			sqlmock.NewRows([]string{"id"}).AddRow(1))
-		res, err := repo.GetByUsername(context.TODO(), username)
-		assert.NoError(t, err)
-		assert.NotNil(t, res)
-	})
 
+	s.repo = NewUserRepository(s.db)
+}
+
+func (s *UserRepositorySuite) TestUserRepository_GetByUsername() {
+
+	username := "uname"
+	want := domain.User{Username: username}
+
+	s.mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "m_user" WHERE username = $1 AND "m_user"."deleted_at" IS NULL ORDER BY "m_user"."id" LIMIT $2`)).
+		WillReturnRows(sqlmock.NewRows([]string{"username"}).
+			AddRow(want.Username))
+
+	res, err := s.repo.GetByUsername(context.TODO(), username)
+	assert.NoError(s.T(), err)
+	assert.Equal(s.T(), res, want)
 }
