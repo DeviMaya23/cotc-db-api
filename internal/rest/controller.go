@@ -65,7 +65,7 @@ func (c Controller) ResponseErrorValidation(ctx echo.Context, err error) error {
 		}
 	}
 
-	return ctx.JSON(http.StatusInternalServerError, StandardAPIResponse{
+	return ctx.JSON(http.StatusBadRequest, StandardAPIResponse{
 		Message: "error validation",
 		Errors:  errMsg,
 	})

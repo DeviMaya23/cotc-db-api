@@ -18,12 +18,14 @@ type UserHandler struct {
 	Service UserService
 }
 
-func NewUserHandler(e *echo.Group, svc UserService) {
+func NewUserHandler(e *echo.Group, svc UserService) *UserHandler {
 	handler := &UserHandler{
 		Service: svc,
 	}
 
 	e.POST("/login", handler.Login)
+
+	return handler
 }
 
 func (h *UserHandler) Login(ctx echo.Context) error {

@@ -17,3 +17,6 @@ packages:
   lizobly/cotc-db/user:
     config:
       all: true
+  lizobly/cotc-db/internal/rest:
+    config:
+      all: true

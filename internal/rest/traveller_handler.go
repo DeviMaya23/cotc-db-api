@@ -21,7 +21,7 @@ type TravellerHandler struct {
 	Service TravellerService
 }
 
-func NewTravellerHandler(e *echo.Group, svc TravellerService) {
+func NewTravellerHandler(e *echo.Group, svc TravellerService) *TravellerHandler {
 	handler := &TravellerHandler{
 		Service: svc,
 	}
@@ -31,6 +31,8 @@ func NewTravellerHandler(e *echo.Group, svc TravellerService) {
 	group.POST("", handler.Create)
 	group.PUT("/:id", handler.Update)
 	group.DELETE("/:id", handler.Delete)
+
+	return handler
 }
 
 // GetByID godoc
@@ -75,7 +77,7 @@ func (a *TravellerHandler) Create(ctx echo.Context) error {
 
 	err = a.Service.Create(ctx.Request().Context(), newTraveller)
 	if err != nil {
-		return a.ResponseError(ctx, http.StatusBadRequest, "error get data", err.Error())
+		return a.ResponseError(ctx, http.StatusBadRequest, "error create data", err.Error())
 	}
 
 	return a.Ok(ctx, "success", newTraveller, nil)
@@ -96,7 +98,7 @@ func (a *TravellerHandler) Update(ctx echo.Context) error {
 
 	err = a.Service.Update(ctx.Request().Context(), &traveller)
 	if err != nil {
-		return a.ResponseError(ctx, http.StatusBadRequest, "error get data", err.Error())
+		return a.ResponseError(ctx, http.StatusBadRequest, "error update data", err.Error())
 	}
 
 	return a.Ok(ctx, "success", traveller, nil)
@@ -110,7 +112,7 @@ func (a *TravellerHandler) Delete(ctx echo.Context) error {
 
 	err = a.Service.Delete(ctx.Request().Context(), id)
 	if err != nil {
-		return a.ResponseError(ctx, http.StatusBadRequest, "error get data", err.Error())
+		return a.ResponseError(ctx, http.StatusBadRequest, "error delete data", err.Error())
 	}
 
 	return a.Ok(ctx, "success", nil, nil)
