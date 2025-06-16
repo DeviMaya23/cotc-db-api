@@ -3,7 +3,6 @@ package postgres
 import (
 	"context"
 	"database/sql"
-	"lizobly/cotc-db/pkg/domain"
 	"path/filepath"
 	"testing"
 
@@ -14,10 +13,10 @@ import (
 	"gorm.io/gorm"
 )
 
-func TestTravellerRepository_Integration(t *testing.T) {
+func TestUserRepository_Integration(t *testing.T) {
 	ctx := context.Background()
 
-	initDBFilePath := filepath.Join("../../..", "testdata", "db-traveller-repo.sql")
+	initDBFilePath := filepath.Join("../../..", "testdata", "db-user-repo.sql")
 
 	pgContainer, err := postgres.Run(ctx, "postgres:15.3-alpine",
 		postgres.WithInitScripts(initDBFilePath),
@@ -50,42 +49,15 @@ func TestTravellerRepository_Integration(t *testing.T) {
 		t.Fatal("failed to open gorm ", err)
 	}
 
-	repo := NewTravellerRepository(db)
+	repo := NewUserRepository(db)
 
-	errCreate := repo.Create(ctx, &domain.Traveller{
-		Name:        "Fiore",
-		Rarity:      5,
-		InfluenceID: 3,
-	})
-	assert.Nil(t, errCreate)
-
-	traveller, err := repo.GetByID(ctx, 1)
+	// existing user
+	user, err := repo.GetByUsername(ctx, "isla")
 	assert.Nil(t, err)
-	assert.Equal(t, traveller.Name, "Fiore")
-	assert.Equal(t, traveller.Rarity, 5)
-	assert.Equal(t, traveller.InfluenceID, 3)
+	assert.Equal(t, user.Username, "isla")
 
-	// Update traveller
-	err = repo.Update(ctx, &domain.Traveller{
-		CommonModel: domain.CommonModel{
-			ID: 1,
-		},
-		Rarity: 6,
-	})
-	assert.Nil(t, err)
-
-	// Check updated traveller
-	traveller, err = repo.GetByID(ctx, 1)
-	assert.Nil(t, err)
-	assert.Equal(t, traveller.Name, "Fiore")
-	assert.Equal(t, traveller.Rarity, 6)
-
-	// Delete traveller
-	err = repo.Delete(ctx, 1)
-	assert.Nil(t, err)
-
-	// Check if deleted
-	traveller, err = repo.GetByID(ctx, 1)
+	// not found
+	user, err = repo.GetByUsername(ctx, "klins")
 	assert.Equal(t, err, gorm.ErrRecordNotFound)
 
 }
