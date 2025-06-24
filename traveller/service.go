@@ -2,8 +2,8 @@ package traveller
 
 import (
 	"context"
-	"lizobly/cotc-db/pkg/constants"
-	"lizobly/cotc-db/pkg/domain"
+	"lizobly/cotc-db-api/pkg/constants"
+	"lizobly/cotc-db-api/pkg/domain"
 )
 
 type TravellerRepository interface {

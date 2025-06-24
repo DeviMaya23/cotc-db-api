@@ -6,7 +6,7 @@ package mocks
 
 import (
 	"context"
-	"lizobly/cotc-db/pkg/domain"
+	"lizobly/cotc-db-api/pkg/domain"
 
 	mock "github.com/stretchr/testify/mock"
 )

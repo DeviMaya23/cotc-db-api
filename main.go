@@ -3,14 +3,14 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	_ "lizobly/cotc-db/docs"
-	"lizobly/cotc-db/user"
+	_ "lizobly/cotc-db-api/docs"
+	"lizobly/cotc-db-api/user"
 
-	postgresRepo "lizobly/cotc-db/internal/repository/postgres"
-	"lizobly/cotc-db/internal/rest"
-	pkgMiddleware "lizobly/cotc-db/pkg/middleware"
-	"lizobly/cotc-db/pkg/validator"
-	"lizobly/cotc-db/traveller"
+	postgresRepo "lizobly/cotc-db-api/internal/repository/postgres"
+	"lizobly/cotc-db-api/internal/rest"
+	pkgMiddleware "lizobly/cotc-db-api/pkg/middleware"
+	"lizobly/cotc-db-api/pkg/validator"
+	"lizobly/cotc-db-api/traveller"
 	"log"
 	"os"
 
