@@ -1,4 +1,4 @@
-module lizobly/cotc-db
+module lizobly/cotc-db-api
 
 go 1.24
 

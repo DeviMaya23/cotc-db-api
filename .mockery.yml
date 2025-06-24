@@ -11,12 +11,12 @@ require-template-schema-exists: true
 template: testify
 template-schema: '{{.Template}}.schema.json'
 packages:
-  lizobly/cotc-db/traveller:
+  lizobly/cotc-db-api/traveller:
     config:
       all: true
-  lizobly/cotc-db/user:
+  lizobly/cotc-db-api/user:
     config:
       all: true
-  lizobly/cotc-db/internal/rest:
+  lizobly/cotc-db-api/internal/rest:
     config:
       all: true

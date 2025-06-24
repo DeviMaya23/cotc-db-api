@@ -2,9 +2,9 @@ package rest
 
 import (
 	"encoding/json"
-	"lizobly/cotc-db/internal/rest/mocks"
-	"lizobly/cotc-db/pkg/domain"
-	"lizobly/cotc-db/pkg/helpers"
+	"lizobly/cotc-db-api/internal/rest/mocks"
+	"lizobly/cotc-db-api/pkg/domain"
+	"lizobly/cotc-db-api/pkg/helpers"
 	"net/http"
 	"strconv"
 	"strings"

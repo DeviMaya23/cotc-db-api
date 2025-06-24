@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"lizobly/cotc-db/pkg/domain"
+	"lizobly/cotc-db-api/pkg/domain"
 	"os"
 
 	"github.com/golang-jwt/jwt/v5"

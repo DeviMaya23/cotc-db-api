@@ -2,8 +2,8 @@ package postgres
 
 import (
 	"context"
-	"lizobly/cotc-db/pkg/domain"
-	"lizobly/cotc-db/pkg/helpers"
+	"lizobly/cotc-db-api/pkg/domain"
+	"lizobly/cotc-db-api/pkg/helpers"
 	"regexp"
 	"testing"
 	"time"
