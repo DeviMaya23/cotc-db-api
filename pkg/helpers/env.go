@@ -1,6 +1,9 @@
 package helpers
 
-import "os"
+import (
+	"os"
+	"strings"
+)
 
 func EnvWithDefault(key, defaultValue string) string {
 
@@ -9,4 +12,14 @@ func EnvWithDefault(key, defaultValue string) string {
 		return defaultValue
 	}
 	return strVal
+}
+
+func EnvWithDefaultBool(key string, defaultValue bool) bool {
+
+	strVal := os.Getenv(key)
+	if strVal == "" {
+		return defaultValue
+	}
+
+	return strings.EqualFold(strVal, "true")
 }

@@ -27,3 +27,25 @@ func TestEnvWithDefault(t *testing.T) {
 	})
 
 }
+
+func TestEnvWithDefaultBool(t *testing.T) {
+
+	t.Run("success get value", func(t *testing.T) {
+		key := "test key"
+		want := true
+		t.Setenv(key, "true")
+
+		got := EnvWithDefaultBool(key, false)
+		assert.Equal(t, got, want)
+
+	})
+	t.Run("success get default", func(t *testing.T) {
+		key := "nonexistent value"
+		want := false
+
+		got := EnvWithDefaultBool(key, false)
+		assert.Equal(t, got, want)
+
+	})
+
+}
