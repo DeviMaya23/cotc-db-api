@@ -8,6 +8,7 @@ import (
 
 	postgresRepo "lizobly/cotc-db-api/internal/repository/postgres"
 	"lizobly/cotc-db-api/internal/rest"
+	"lizobly/cotc-db-api/pkg/helpers"
 	pkgMiddleware "lizobly/cotc-db-api/pkg/middleware"
 	"lizobly/cotc-db-api/pkg/validator"
 	"lizobly/cotc-db-api/traveller"
@@ -108,7 +109,10 @@ func main() {
 	userService := user.NewUserService(userRepo)
 
 	v1 := e.Group("/api/v1")
-	v1.Use(jwtMiddleware)
+	// JWT Middleware Flag
+	if helpers.EnvWithDefaultBool("AUTH_IS_ENABLED", false) {
+		v1.Use(jwtMiddleware)
+	}
 
 	// Handler
 	rest.NewTravellerHandler(v1, travellerService)
